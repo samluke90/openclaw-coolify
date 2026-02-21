@@ -90,7 +90,6 @@ RUN curl -fsSL https://bun.sh/install | bash
 RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-use playwright --break-system-packages && \
     playwright install-deps
 
-# Configure QMD Persistence
 ENV XDG_CACHE_HOME="/data/.cache"
 
 # Debian aliases
@@ -106,11 +105,11 @@ ENV OPENCLAW_BETA=${OPENCLAW_BETA} \
     OPENCLAW_NO_ONBOARD=1 \
     NPM_CONFIG_UNSAFE_PERM=true
 
-# Install Vercel, Marp, QMD with BuildKit cache mount for faster rebuilds
+# Install Vercel, Marp and CLI tools with BuildKit cache mount for faster rebuilds
 # PATH export ensures bun is found in multi-stage BuildKit context
 RUN --mount=type=cache,target=/data/.bun/install/cache \
     export PATH="/data/.bun/bin:/data/.bun/install/global/bin:$PATH" && \
-    ( bun install -g vercel @marp-team/marp-cli https://github.com/tobi/qmd && hash -r && \
+    ( bun install -g vercel @marp-team/marp-cli && hash -r && \
     bun pm -g untrusted && \
     bun install -g @openai/codex @google/gemini-cli opencode-ai @steipete/summarize @hyperbrowser/agent clawhub ) || \
     echo "Warning: bun global installs failed, continuing build..."
