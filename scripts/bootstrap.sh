@@ -211,4 +211,8 @@ echo "      openclaw onboard"
 echo ""
 echo "=================================================================="
 echo "🔧 Current ulimit is: $(ulimit -n)"
+
+# Clean stale session locks from previous container lifecycle
+find "$OPENCLAW_STATE/agents" -name "*.lock" -delete 2>/dev/null && echo "🧹 Cleared stale session locks" || true
+
 exec openclaw gateway run
