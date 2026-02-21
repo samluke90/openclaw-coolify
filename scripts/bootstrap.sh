@@ -215,4 +215,11 @@ echo "🔧 Current ulimit is: $(ulimit -n)"
 # Clean stale session locks from previous container lifecycle
 find "$OPENCLAW_STATE/agents" -name "*.lock" -delete 2>/dev/null && echo "🧹 Cleared stale session locks" || true
 
+# Patch: allow ws:// on private LAN IPs (container uses bind:lan for node access)
+OPENCLAW_NET_FILE="$(dirname "$(realpath "$(which openclaw)")")/../lib/node_modules/openclaw/dist/net-COi3RSq7.js"
+[ -f "$OPENCLAW_NET_FILE" ] || OPENCLAW_NET_FILE="/usr/local/lib/node_modules/openclaw/dist/net-COi3RSq7.js"
+if [ -f "$OPENCLAW_NET_FILE" ]; then
+  sed -i 's/return isLoopbackHost(parsed\.hostname);/return isLoopbackHost(parsed.hostname) || parsed.hostname.startsWith("10.") || parsed.hostname.startsWith("172.") || parsed.hostname.startsWith("192.168.");/' "$OPENCLAW_NET_FILE" && echo "🔓 Patched LAN security check" || true
+fi
+
 exec openclaw gateway run
