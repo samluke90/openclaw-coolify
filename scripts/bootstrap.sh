@@ -90,9 +90,6 @@ if [ ! -f "$CONFIG_FILE" ]; then
       },
       "telegram": {
         "enabled": true
-      },
-      "google-antigravity-auth": {
-        "enabled": true
       }
     }
   },
@@ -110,7 +107,8 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "bind": "lan",
     "controlUi": {
       "enabled": true,
-      "allowInsecureAuth": false
+      "allowInsecureAuth": true,
+      "dangerouslyAllowHostHeaderOriginFallback": true
     },
     "trustedProxies": [
       "*"
